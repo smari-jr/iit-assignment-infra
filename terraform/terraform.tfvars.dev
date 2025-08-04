@@ -1,0 +1,52 @@
+# Development Environment Configuration
+project_name = "iit-test"
+environment  = "dev"
+aws_region   = "ap-southeast-1"
+
+# Network Configuration
+vpc_cidr            = "10.0.0.0/16"
+availability_zones  = ["ap-southeast-1a", "ap-southeast-1b"]
+
+# Subnet Configuration (All /20 subnets as requested)
+public_subnet_cidrs = ["10.0.0.0/20", "10.0.16.0/20"]    # Public subnets for ALB/NLB
+app_subnet_cidrs    = ["10.0.32.0/20", "10.0.48.0/20"]   # App subnets for EKS nodes
+db_subnet_cidrs     = ["10.0.64.0/20", "10.0.80.0/20"]   # DB subnets for RDS
+
+# EKS Configuration
+cluster_version      = "1.33"
+node_instance_types  = ["t3.medium"]
+node_desired_size    = 2
+node_max_size        = 2
+node_min_size        = 2
+node_disk_size       = 20
+
+# RDS Configuration (PostgreSQL)
+db_name                     = "app_database"
+db_username                 = "dbadmin"
+# db_password is set via environment variable TF_VAR_db_password for security
+# Set it using: export TF_VAR_db_password="YourSecurePassword123!"
+db_instance_class           = "db.t3.micro"
+db_allocated_storage        = 20
+db_max_allocated_storage    = 100
+db_engine                   = "postgres"
+db_engine_version           = "15.8"
+db_multi_az                 = false  # Single AZ for dev to save cost
+db_backup_retention_period  = 3
+enable_deletion_protection  = false  # Allow deletion in dev environment
+
+# Bastion Host Configuration
+enable_bastion                 = true
+bastion_instance_type          = "t3.micro"
+bastion_key_name               = "iit-test-key"  # Replace with your actual key pair name
+bastion_allowed_cidr_blocks    = ["0.0.0.0/0"]       # Restrict to your IP in production
+
+# EKS Public Access Configuration
+# For GitHub Actions CI/CD - restrict to GitHub Actions IP ranges in production
+eks_public_access_cidrs        = ["0.0.0.0/0"]  # Consider restricting to GitHub Actions IP ranges
+
+# Monitoring Configuration
+enable_monitoring_alerts       = true
+monitoring_alert_email         = ""  # Add your email address for alerts
+enable_container_insights      = true
+log_retention_days            = 7
+enable_custom_metrics         = true

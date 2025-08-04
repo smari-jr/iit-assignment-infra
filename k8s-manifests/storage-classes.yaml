@@ -1,0 +1,60 @@
+# Storage Class for EBS GP3 (default)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: gp3
+  fsType: ext4
+  encrypted: "true"
+
+---
+# Storage Class for EBS GP2 (legacy support)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp2
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: gp2
+  fsType: ext4
+  encrypted: "true"
+
+---
+# Storage Class for EBS io2 (high performance)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: io2
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: io2
+  iops: "1000"
+  fsType: ext4
+  encrypted: "true"
+
+---
+# Storage Class for EFS (shared storage)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: fs-XXXXXXXX  # Replace with actual EFS file system ID
+  directoryPerms: "700"
+  gidRangeStart: "1000"
+  gidRangeEnd: "2000"
+  basePath: "/dynamic-provisioning"
